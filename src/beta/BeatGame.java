@@ -27,8 +27,11 @@ public class BeatGame extends JFrame{
 		setVisible(true);
 		
 		//메인클래스의 위치를 기반으로 리소스를 얻어온다음 이미지 소스를 가져와서 초기화해줌
-		introBackground = new ImageIcon(Main.class.getResource("../images/introBackground.jpg")).getImage();
+		introBackground = new ImageIcon(Main.class.getResource("../images/introBackground_title.jpg")).getImage();
 		
+		//인트로 음악을 넣어서 뮤직 객체 생성,무한 반복값 줌  
+		Music introMusic = new Music("introMusic.mp3", true);
+		introMusic.start();
 	}
 	
 	//paint는  gui게임에서 가장 첫번째로 그림을 그려주는 함수 약속된 함수임
