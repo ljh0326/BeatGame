@@ -6,8 +6,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,8 +22,7 @@ public class BeatGame extends JFrame {
 
 	// 메인클래스의 위치를 기반으로 리소스를 얻어온다음 이미지 소스를 가져와서 초기화해줌
 	private Image background = new ImageIcon(Main.class.getResource("../images/introBackground_title.jpg")).getImage();
-	private Image selectedImage = new ImageIcon(Main.class.getResource("../images/cnadyLand Start Image.png")).getImage();
-	private Image titleImage = new ImageIcon(Main.class.getResource("../images/candyLand Title Image.png")).getImage();
+	
 	
 	private JLabel menuBar = new JLabel(new ImageIcon(Main.class.getResource("../images/menuBar.png")));
 
@@ -53,6 +52,13 @@ public class BeatGame extends JFrame {
 	// 메인스크린인지 아닌지
 	private boolean isMainScreen = false;
 
+	ArrayList<Track> trackList = new ArrayList<Track>();
+	
+	private Image selectedImage; 
+	private Image titleImage;
+	private Music selectedMusic;
+	private int nowSelected = 0;
+	
 	public BeatGame() {
 
 		setUndecorated(true); // 메뉴바가 보이지 않게 해준다.
@@ -65,6 +71,17 @@ public class BeatGame extends JFrame {
 		setBackground(new Color(0, 0, 0, 0));
 		setLayout(null);
 
+		Music introMusic = new Music("introMusic.mp3", true); // 인트로 음악을 넣어서 뮤직 객체 생성,무한 반복값 줌
+		introMusic.start();
+		
+		trackList.add(new Track("candyLand Title Image.png", "cnadyLand Start Image.png", "candyLand Game Image.png"
+				,"Candyland Selected.mp3", "Tobu - Candyland .mp3"));
+		trackList.add(new Track("funnySong Title Image.png", "funnySong Start Image.png", "funnySong Game Image.png"
+				,"funnySong Selected.mp3", "bensound-funnySong.mp3"));
+		trackList.add(new Track("popsicle Title Image.png", "popsicle Start Image.png", "popsicle Game Image.png"
+				,"Popsicle Selected.mp3", "LFZ - Popsicle .mp3"));
+		
+		
 		// exit버튼 메뉴바에 있는거
 		exitButton.setBounds(1245, 0, 30, 30);
 		exitButton.setBorderPainted(false);
@@ -110,6 +127,8 @@ public class BeatGame extends JFrame {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				introMusic.close();
+				selecTrack(0);
 				startButton.setVisible(false);
 				quitButton.setVisible(false);
 				leftButton.setVisible(true); // 레프트 버튼 활성화
@@ -166,7 +185,7 @@ public class BeatGame extends JFrame {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				// 왼쪽 버튼 이벤트
+				selectLeft();
 			}
 		});
 		add(leftButton);
@@ -192,7 +211,7 @@ public class BeatGame extends JFrame {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				// 오른쪽 버튼 이벤트
+				selectRight();
 			}
 		});
 		add(rightButton);
@@ -218,8 +237,7 @@ public class BeatGame extends JFrame {
 		});
 		add(menuBar);
 
-		Music introMusic = new Music("introMusic.mp3", true); // 인트로 음악을 넣어서 뮤직 객체 생성,무한 반복값 줌
-		introMusic.start();
+		
 	}
 
 	// paint는 gui게임에서 가장 첫번째로 그림을 그려주는 함수 약속된 함수임
@@ -251,5 +269,34 @@ public class BeatGame extends JFrame {
 		paintComponents(g);
 		// 리페인트 함으로서 다시 페인트함수를 불러옴
 		this.repaint();
+	}
+	
+	public void selecTrack(int nowSelected) {
+		if(selectedMusic != null)
+			selectedMusic.close();
+		titleImage = new ImageIcon(Main.class.getResource("../images/" + trackList.get(nowSelected).getTitleImage())).getImage();
+		selectedImage = new ImageIcon(Main.class.getResource("../images/" + trackList.get(nowSelected).getStartImage())).getImage();
+		selectedMusic = new Music(trackList.get(nowSelected).getStartMusic(), true);
+		selectedMusic.start();
+	}
+	
+	//왼쪽 곡 선택
+	public void selectLeft() {
+		//1. 첫번째 곡이면 맨끝으로 아니면 --
+		if(nowSelected == 0)
+			nowSelected = trackList.size() - 1;
+		else
+			nowSelected--;
+		selecTrack(nowSelected);
+	}
+	
+	//오른 쪽 곡선택
+	public void selectRight() {
+		//1. 맨끝곡이면 첫번째 곡으로 아니면 ++
+		if(nowSelected == trackList.size() - 1)
+			nowSelected = 0;
+		else
+			nowSelected++;
+		selecTrack(nowSelected);
 	}
 }
