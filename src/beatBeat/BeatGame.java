@@ -22,8 +22,7 @@ public class BeatGame extends JFrame {
 
 	// 메인클래스의 위치를 기반으로 리소스를 얻어온다음 이미지 소스를 가져와서 초기화해줌
 	private Image background = new ImageIcon(Main.class.getResource("../images/introBackground_title.jpg")).getImage();
-	
-	
+
 	private JLabel menuBar = new JLabel(new ImageIcon(Main.class.getResource("../images/menuBar.png")));
 
 	// 버튼 아이콘
@@ -39,12 +38,20 @@ public class BeatGame extends JFrame {
 	private ImageIcon rightButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/rightButton2.png"));
 	private ImageIcon rightButtonBasicImage = new ImageIcon(Main.class.getResource("../images/rightButton1.png"));
 
+	// easy hard 버튼
+	private ImageIcon easyButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/easyButton2.png"));
+	private ImageIcon easyButtonBasicImage = new ImageIcon(Main.class.getResource("../images/easyButton1.png"));
+	private ImageIcon hardButtonEnteredImage = new ImageIcon(Main.class.getResource("../images/hardButton2.png"));
+	private ImageIcon hardButtonBasicImage = new ImageIcon(Main.class.getResource("../images/hardButton1.png"));
+
 	// 만들어 둔 아이콘들로 만든 버튼
 	private JButton exitButton = new JButton(exitButtonBasicImage);
 	private JButton startButton = new JButton(startButtonBasicImage);
 	private JButton quitButton = new JButton(quitButtonBasicImage);
 	private JButton leftButton = new JButton(leftButtonBasicImage);
 	private JButton rightButton = new JButton(rightButtonBasicImage);
+	private JButton easyButton = new JButton(easyButtonBasicImage);
+	private JButton hardButton = new JButton(hardButtonBasicImage);
 
 	// 마우스 포인터값
 	private int mouseX, mouseY;
@@ -53,12 +60,12 @@ public class BeatGame extends JFrame {
 	private boolean isMainScreen = false;
 
 	ArrayList<Track> trackList = new ArrayList<Track>();
-	
-	private Image selectedImage; 
+
+	private Image selectedImage;
 	private Image titleImage;
 	private Music selectedMusic;
 	private int nowSelected = 0;
-	
+
 	public BeatGame() {
 
 		setUndecorated(true); // 메뉴바가 보이지 않게 해준다.
@@ -73,15 +80,14 @@ public class BeatGame extends JFrame {
 
 		Music introMusic = new Music("introMusic.mp3", true); // 인트로 음악을 넣어서 뮤직 객체 생성,무한 반복값 줌
 		introMusic.start();
-		
-		trackList.add(new Track("candyLand Title Image.png", "cnadyLand Start Image.png", "candyLand Game Image.png"
-				,"Candyland Selected.mp3", "Tobu - Candyland .mp3"));
-		trackList.add(new Track("funnySong Title Image.png", "funnySong Start Image.png", "funnySong Game Image.png"
-				,"funnySong Selected.mp3", "bensound-funnySong.mp3"));
-		trackList.add(new Track("popsicle Title Image.png", "popsicle Start Image.png", "popsicle Game Image.png"
-				,"Popsicle Selected.mp3", "LFZ - Popsicle .mp3"));
-		
-		
+
+		trackList.add(new Track("candyLand Title Image.png", "cnadyLand Start Image.png", "candyLand Game Image.png",
+				"Candyland Selected.mp3", "Tobu - Candyland .mp3"));
+		trackList.add(new Track("funnySong Title Image.png", "funnySong Start Image.png", "funnySong Game Image.png",
+				"funnySong Selected.mp3", "bensound-funnySong.mp3"));
+		trackList.add(new Track("popsicle Title Image.png", "popsicle Start Image.png", "popsicle Game Image.png",
+				"Popsicle Selected.mp3", "LFZ - Popsicle .mp3"));
+
 		// exit버튼 메뉴바에 있는거
 		exitButton.setBounds(1245, 0, 30, 30);
 		exitButton.setBorderPainted(false);
@@ -133,6 +139,8 @@ public class BeatGame extends JFrame {
 				quitButton.setVisible(false);
 				leftButton.setVisible(true); // 레프트 버튼 활성화
 				rightButton.setVisible(true); // 라이트 버튼 활성화
+				easyButton.setVisible(true); // 이지 버튼 활성화
+				hardButton.setVisible(true); // 하드 버튼 활성화
 				background = new ImageIcon(Main.class.getResource("../images/mainBackground.jpg")).getImage();
 				isMainScreen = true;
 			}
@@ -216,6 +224,58 @@ public class BeatGame extends JFrame {
 		});
 		add(rightButton);
 
+		// easy버튼
+		easyButton.setVisible(false);
+		easyButton.setBounds(375, 580, 250, 70);
+		easyButton.setBorderPainted(false);
+		easyButton.setContentAreaFilled(false);
+		easyButton.setFocusPainted(false);
+		easyButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				easyButton.setIcon(easyButtonEnteredImage);
+				easyButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				easyButton.setIcon(easyButtonBasicImage);
+				easyButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				gameStart(nowSelected, "easy");
+			}
+		});
+		add(easyButton);
+
+		// hard버튼
+		hardButton.setVisible(false);
+		hardButton.setBounds(655, 580, 250, 70);
+		hardButton.setBorderPainted(false);
+		hardButton.setContentAreaFilled(false);
+		hardButton.setFocusPainted(false);
+		hardButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				hardButton.setIcon(hardButtonEnteredImage);
+				hardButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				hardButton.setIcon(hardButtonBasicImage);
+				hardButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				gameStart(nowSelected, "hard");
+			}
+		});
+		add(hardButton);
+
 		menuBar.setBounds(0, 0, 1280, 30); // 메뉴바의 위치와 크기를 정해준다.
 		menuBar.addMouseListener(new MouseAdapter() {
 			@Override
@@ -237,7 +297,6 @@ public class BeatGame extends JFrame {
 		});
 		add(menuBar);
 
-		
 	}
 
 	// paint는 gui게임에서 가장 첫번째로 그림을 그려주는 함수 약속된 함수임
@@ -270,33 +329,47 @@ public class BeatGame extends JFrame {
 		// 리페인트 함으로서 다시 페인트함수를 불러옴
 		this.repaint();
 	}
-	
+
 	public void selecTrack(int nowSelected) {
-		if(selectedMusic != null)
+		if (selectedMusic != null)
 			selectedMusic.close();
-		titleImage = new ImageIcon(Main.class.getResource("../images/" + trackList.get(nowSelected).getTitleImage())).getImage();
-		selectedImage = new ImageIcon(Main.class.getResource("../images/" + trackList.get(nowSelected).getStartImage())).getImage();
+		titleImage = new ImageIcon(Main.class.getResource("../images/" + trackList.get(nowSelected).getTitleImage()))
+				.getImage();
+		selectedImage = new ImageIcon(Main.class.getResource("../images/" + trackList.get(nowSelected).getStartImage()))
+				.getImage();
 		selectedMusic = new Music(trackList.get(nowSelected).getStartMusic(), true);
 		selectedMusic.start();
 	}
-	
-	//왼쪽 곡 선택
+
+	// 왼쪽 곡 선택
 	public void selectLeft() {
-		//1. 첫번째 곡이면 맨끝으로 아니면 --
-		if(nowSelected == 0)
+		// 1. 첫번째 곡이면 맨끝으로 아니면 --
+		if (nowSelected == 0)
 			nowSelected = trackList.size() - 1;
 		else
 			nowSelected--;
 		selecTrack(nowSelected);
 	}
-	
-	//오른 쪽 곡선택
+
+	// 오른 쪽 곡선택
 	public void selectRight() {
-		//1. 맨끝곡이면 첫번째 곡으로 아니면 ++
-		if(nowSelected == trackList.size() - 1)
+		// 1. 맨끝곡이면 첫번째 곡으로 아니면 ++
+		if (nowSelected == trackList.size() - 1)
 			nowSelected = 0;
 		else
 			nowSelected++;
 		selecTrack(nowSelected);
+	}
+	
+	//게임 화면으로 진입
+	public void gameStart(int nowSelected, String difficulty) {
+		if(selectedMusic != null)
+			selectedMusic.close();
+		isMainScreen = false;
+		leftButton.setVisible(false);
+		rightButton.setVisible(false);
+		easyButton.setVisible(false);
+		hardButton.setVisible(false);
+		background = new ImageIcon(Main.class.getResource("../images/" + trackList.get(nowSelected).getGameImgae())).getImage();
 	}
 }
