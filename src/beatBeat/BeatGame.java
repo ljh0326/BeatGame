@@ -2,8 +2,11 @@ package beatBeat;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -20,6 +23,11 @@ public class BeatGame extends JFrame {
 	private Image screenImage;
 	private Graphics screenGraphic;
 
+	private Image gameInfoImage = new ImageIcon(Main.class.getResource("../images/gameInfo.png")).getImage();
+	private Image judgmentLineImage = new ImageIcon(Main.class.getResource("../images/judgmentLine.png")).getImage();
+	private Image notePathImage = new ImageIcon(Main.class.getResource("../images/notePath.png")).getImage();
+	private Image notePathLineImage = new ImageIcon(Main.class.getResource("../images/notePathLine.png")).getImage();
+	private Image noteBasicImage = new ImageIcon(Main.class.getResource("../images/noteBasic.png")).getImage();
 	// 메인클래스의 위치를 기반으로 리소스를 얻어온다음 이미지 소스를 가져와서 초기화해줌
 	private Image background = new ImageIcon(Main.class.getResource("../images/introBackground_title.jpg")).getImage();
 
@@ -63,7 +71,8 @@ public class BeatGame extends JFrame {
 
 	// 메인스크린인지 아닌지
 	private boolean isMainScreen = false;
-
+	private boolean isGameScreen = false;
+	
 	ArrayList<Track> trackList = new ArrayList<Track>();
 
 	private Image selectedImage;
@@ -328,14 +337,14 @@ public class BeatGame extends JFrame {
 		screenImage = createImage(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT);
 		// 2. 스크린 이미지를 이용해 그래픽 객체를 얻어와서
 		screenGraphic = screenImage.getGraphics();
-		// 3. 이미지에 원하는 내용을 그려준다.
-		screenDraw(screenGraphic);
+		// 3. 이미지에 원하는 내용을 그려준다. 글짜깨짐 해결 하기위해 2D로 형변환
+		screenDraw((Graphics2D)screenGraphic);
 		// 4. drawImage메서드를통해 스크린 이미지를 0,0위치에 그려줌
 		g.drawImage(screenImage, 0, 0, null);
 	}
 
 	// 프로그램이 종료되는 순간까지 paint함수를 왔다갔다 하면서 그려줌
-	public void screenDraw(Graphics g) {
+	public void screenDraw(Graphics2D g) {
 		// drawImage메서드는 인트로 백그라운드 리소스를 스크린 이미지에 그려줌
 		// 주로 이미지나 역동적인 이미지에 사용하는게 일반적
 		// add메서드 안쓰는 단순한 이미지들에게 많이 사용한다.
@@ -344,6 +353,51 @@ public class BeatGame extends JFrame {
 		if (isMainScreen) {
 			g.drawImage(selectedImage, 340, 100, null);
 			g.drawImage(titleImage, 340, 70, null);
+		}
+		if (isGameScreen) {
+			g.drawImage(notePathImage, 228, 30, null);
+			g.drawImage(notePathImage, 332, 30, null);
+			g.drawImage(notePathImage, 436, 30, null);
+			g.drawImage(notePathImage, 540, 30, null);
+			g.drawImage(notePathImage, 640, 30, null);
+			g.drawImage(notePathImage, 744, 30, null);
+			g.drawImage(notePathImage, 848, 30, null);
+			g.drawImage(notePathImage, 952, 30, null);
+			g.drawImage(notePathLineImage, 224, 30, null);
+			g.drawImage(notePathLineImage, 328, 30, null);
+			g.drawImage(notePathLineImage, 432, 30, null);
+			g.drawImage(notePathLineImage, 536, 30, null);
+			g.drawImage(notePathLineImage, 740, 30, null);
+			g.drawImage(notePathLineImage, 844, 30, null);
+			g.drawImage(notePathLineImage, 948, 30, null);
+			g.drawImage(notePathLineImage, 1052, 30, null);
+			g.drawImage(gameInfoImage, 0, 660, null);
+			g.drawImage(judgmentLineImage, 0, 580, null);
+			g.drawImage(noteBasicImage, 228, 30, null);
+			g.drawImage(noteBasicImage, 332, 30, null);
+			g.drawImage(noteBasicImage, 436, 30, null);
+			g.drawImage(noteBasicImage, 540, 30, null);
+			g.drawImage(noteBasicImage, 640, 30, null);
+			g.drawImage(noteBasicImage, 744, 30, null);
+			g.drawImage(noteBasicImage, 848, 30, null);
+			g.drawImage(noteBasicImage, 952, 30, null);
+			g.setColor(Color.white);
+			g.setFont(new Font("Arial", Font.BOLD, 30));
+			//안티 에일리언싱 적용
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g.drawString("Candy - Land", 20, 702);
+			g.drawString("Easy", 1190, 702);
+			g.setFont(new Font("Arial", Font.BOLD, 26));
+			g.setColor(Color.DARK_GRAY);
+			g.drawString("S", 270, 609);
+			g.drawString("D", 374, 609);
+			g.drawString("F", 478, 609);
+			g.drawString("Space Bar", 580, 609);
+			g.drawString("J", 	784, 609);
+			g.drawString("K", 889, 609);
+			g.drawString("L", 993, 609);
+			g.setFont(new Font("Elephant", Font.BOLD, 30));
+			g.drawString("000000", 565, 702);
 		}
 		// 메뉴바같은걸 JFrame안에 그리면 추가해주는 것
 		// 주로 버튼이나 고정적인 대상에는 paintComponents를 이용해서 구현한다.
@@ -396,6 +450,7 @@ public class BeatGame extends JFrame {
 		background = new ImageIcon(Main.class.getResource("../images/" + trackList.get(nowSelected).getGameImgae()))
 				.getImage();
 		backButton.setVisible(true);
+		isGameScreen = true;
 	}
 
 	public void backMain() {
@@ -407,6 +462,7 @@ public class BeatGame extends JFrame {
 		background = new ImageIcon(Main.class.getResource("../images/mainBackground.jpg")).getImage();
 		backButton.setVisible(false);
 		selecTrack(nowSelected);
+		isGameScreen = false;
 	}
 
 	public void enterMain() {
