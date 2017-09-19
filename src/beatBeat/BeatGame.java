@@ -23,11 +23,7 @@ public class BeatGame extends JFrame {
 	private Image screenImage;
 	private Graphics screenGraphic;
 
-	private Image gameInfoImage = new ImageIcon(Main.class.getResource("../images/gameInfo.png")).getImage();
-	private Image judgmentLineImage = new ImageIcon(Main.class.getResource("../images/judgmentLine.png")).getImage();
-	private Image notePathImage = new ImageIcon(Main.class.getResource("../images/notePath.png")).getImage();
-	private Image notePathLineImage = new ImageIcon(Main.class.getResource("../images/notePathLine.png")).getImage();
-	private Image noteBasicImage = new ImageIcon(Main.class.getResource("../images/noteBasic.png")).getImage();
+
 	// 메인클래스의 위치를 기반으로 리소스를 얻어온다음 이미지 소스를 가져와서 초기화해줌
 	private Image background = new ImageIcon(Main.class.getResource("../images/introBackground_title.jpg")).getImage();
 
@@ -66,6 +62,7 @@ public class BeatGame extends JFrame {
 	private JButton hardButton = new JButton(hardButtonBasicImage);
 	private JButton backButton = new JButton(backButtonBasicImage);
 
+	
 	// 마우스 포인터값
 	private int mouseX, mouseY;
 
@@ -81,6 +78,8 @@ public class BeatGame extends JFrame {
 	private Music introMusic = new Music("introMusic.mp3", true); // 인트로 음악을 넣어서 뮤직 객체 생성,무한 반복값 줌
 	private int nowSelected = 0;
 
+	public static Game game;
+	
 	public BeatGame() {
 
 		setUndecorated(true); // 메뉴바가 보이지 않게 해준다.
@@ -93,14 +92,16 @@ public class BeatGame extends JFrame {
 		setBackground(new Color(0, 0, 0, 0));
 		setLayout(null);
 
+		addKeyListener(new KeyListener());
+		
 		introMusic.start();
 
 		trackList.add(new Track("candyLand Title Image.png", "cnadyLand Start Image.png", "candyLand Game Image.png",
-				"Candyland Selected.mp3", "Tobu - Candyland .mp3"));
+				"Candyland Selected.mp3", "Tobu - Candyland .mp3", "Tobu - Candyland"));
 		trackList.add(new Track("funnySong Title Image.png", "funnySong Start Image.png", "funnySong Game Image.png",
-				"funnySong Selected.mp3", "bensound-funnySong.mp3"));
+				"funnySong Selected.mp3", "bensound-funnySong.mp3", "bensound-funnySong"));
 		trackList.add(new Track("popsicle Title Image.png", "popsicle Start Image.png", "popsicle Game Image.png",
-				"Popsicle Selected.mp3", "LFZ - Popsicle .mp3"));
+				"Popsicle Selected.mp3", "LFZ - Popsicle .mp3", "LFZ - Popsicle"));
 
 		// exit버튼 메뉴바에 있는거
 		exitButton.setBounds(1245, 0, 30, 30);
@@ -251,7 +252,7 @@ public class BeatGame extends JFrame {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				gameStart(nowSelected, "easy");
+				gameStart(nowSelected, "Easy");
 			}
 		});
 		add(easyButton);
@@ -277,7 +278,7 @@ public class BeatGame extends JFrame {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				gameStart(nowSelected, "hard");
+				gameStart(nowSelected, "Hard");
 			}
 		});
 		add(hardButton);
@@ -355,49 +356,7 @@ public class BeatGame extends JFrame {
 			g.drawImage(titleImage, 340, 70, null);
 		}
 		if (isGameScreen) {
-			g.drawImage(notePathImage, 228, 30, null);
-			g.drawImage(notePathImage, 332, 30, null);
-			g.drawImage(notePathImage, 436, 30, null);
-			g.drawImage(notePathImage, 540, 30, null);
-			g.drawImage(notePathImage, 640, 30, null);
-			g.drawImage(notePathImage, 744, 30, null);
-			g.drawImage(notePathImage, 848, 30, null);
-			g.drawImage(notePathImage, 952, 30, null);
-			g.drawImage(notePathLineImage, 224, 30, null);
-			g.drawImage(notePathLineImage, 328, 30, null);
-			g.drawImage(notePathLineImage, 432, 30, null);
-			g.drawImage(notePathLineImage, 536, 30, null);
-			g.drawImage(notePathLineImage, 740, 30, null);
-			g.drawImage(notePathLineImage, 844, 30, null);
-			g.drawImage(notePathLineImage, 948, 30, null);
-			g.drawImage(notePathLineImage, 1052, 30, null);
-			g.drawImage(gameInfoImage, 0, 660, null);
-			g.drawImage(judgmentLineImage, 0, 580, null);
-			g.drawImage(noteBasicImage, 228, 30, null);
-			g.drawImage(noteBasicImage, 332, 30, null);
-			g.drawImage(noteBasicImage, 436, 30, null);
-			g.drawImage(noteBasicImage, 540, 30, null);
-			g.drawImage(noteBasicImage, 640, 30, null);
-			g.drawImage(noteBasicImage, 744, 30, null);
-			g.drawImage(noteBasicImage, 848, 30, null);
-			g.drawImage(noteBasicImage, 952, 30, null);
-			g.setColor(Color.white);
-			g.setFont(new Font("Arial", Font.BOLD, 30));
-			//안티 에일리언싱 적용
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-			g.drawString("Candy - Land", 20, 702);
-			g.drawString("Easy", 1190, 702);
-			g.setFont(new Font("Arial", Font.BOLD, 26));
-			g.setColor(Color.DARK_GRAY);
-			g.drawString("S", 270, 609);
-			g.drawString("D", 374, 609);
-			g.drawString("F", 478, 609);
-			g.drawString("Space Bar", 580, 609);
-			g.drawString("J", 	784, 609);
-			g.drawString("K", 889, 609);
-			g.drawString("L", 993, 609);
-			g.setFont(new Font("Elephant", Font.BOLD, 30));
-			g.drawString("000000", 565, 702);
+			game.screenDraw(g);
 		}
 		// 메뉴바같은걸 JFrame안에 그리면 추가해주는 것
 		// 주로 버튼이나 고정적인 대상에는 paintComponents를 이용해서 구현한다.
@@ -447,10 +406,12 @@ public class BeatGame extends JFrame {
 		rightButton.setVisible(false);
 		easyButton.setVisible(false);
 		hardButton.setVisible(false);
-		background = new ImageIcon(Main.class.getResource("../images/" + trackList.get(nowSelected).getGameImgae()))
-				.getImage();
+		background = new ImageIcon(Main.class.getResource("../images/" + trackList.get(nowSelected).getGameImgae())).getImage();
 		backButton.setVisible(true);
 		isGameScreen = true;
+		setFocusable(true);
+		game = new Game(trackList.get(nowSelected).getTitleName(), difficulty, trackList.get(nowSelected).getGameMusic());
+		game.start();
 	}
 
 	public void backMain() {
@@ -463,6 +424,7 @@ public class BeatGame extends JFrame {
 		backButton.setVisible(false);
 		selecTrack(nowSelected);
 		isGameScreen = false;
+		game.close();
 	}
 
 	public void enterMain() {
